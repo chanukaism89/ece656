@@ -1,0 +1,162 @@
+{% extends "recipes/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="pt-8 px-4">
+  <div class="flex">
+    <div class="w-1/2 pr-4">
+      <h2 class="text-4xl mb-2 leading-tight font-heading">{{ recipe.recipe_name | title }}
+        <span class="recipe-title-liked-status hidden">
+          <i class="fa fa-heart text-red-600 mr-2"></i>
+        </span>
+      </h2>
+      <p class="text-xl mb-2 text-gray-600">Submitted by Food.com</p>
+      <p>
+        <button class="add-recipe-to-favourites-button hidden text-xl text-gray-600" onclick="addRecipeToFavourites()">
+          <i class="fa fa-heart text-red-300 mr-2"></i>
+          Add to favourites
+        </button>
+        <button class="remove-recipe-from-favourites-button hidden text-xl text-gray-600 hover:text-gray-800"
+          onclick="removeRecipeFromFavourites()">
+          (Remove from favourites)
+        </button>
+      </p>
+
+      <script>
+        const updateState = (liked) => {
+          const elTitleStatus = document.getElementsByClassName("recipe-title-liked-status")[0]
+          const elLikeButton = document.getElementsByClassName("add-recipe-to-favourites-button")[0]
+          const elDislikeButton = document.getElementsByClassName("remove-recipe-from-favourites-button")[0]
+          if (liked) {
+            elTitleStatus.classList.remove("hidden")
+            elLikeButton.classList.add("hidden")
+            elDislikeButton.classList.remove("hidden")
+          }
+          else {
+            elTitleStatus.classList.add("hidden")
+            elLikeButton.classList.remove("hidden")
+            elDislikeButton.classList.add("hidden")
+          }
+        }
+
+        const addRecipeToFavourites = () => {
+          const url = "{% url 'recipe_like_view' recipe.recipe_id %}"
+          fetch(url,
+            {
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{csrf_token}}',
+              },
+              method: "POST",
+              body: JSON.stringify({})
+            })
+            .then(res => {
+              liked = true;
+              updateState(liked)
+            })
+            .catch(err => { console.error(err) })
+        }
+
+        const removeRecipeFromFavourites = () => {
+          const url = "{% url 'recipe_unlike_view' recipe.recipe_id %}"
+          fetch(url,
+            {
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{csrf_token}}',
+              },
+              method: "POST",
+              body: JSON.stringify({})
+            })
+            .then(res => {
+              liked = false;
+              updateState(liked)
+            })
+            .catch(err => { console.error(err) })
+        }
+
+        {% if liked %}
+        let liked = true
+        {% else %}
+        let liked = false
+        {% endif %}
+
+        updateState(liked)
+      </script>
+
+      <h3 class="text-3xl mt-6 mb-4 leading-tight font-heading">Ingredients</h3>
+      {# <p class="text-xl">{{ recipe.ingredients.all|join:", "|title }}</p> #}
+      <ul class="text-xl">
+        {% for ingredient in ingredients %}
+        <li>{{ ingredient | title  }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="w-1/2">
+      <figure>
+        
+        <img src="{% static "recipes/food-with-no-image.png" %}">
+        
+        <figcaption><q class="italic">{{ recipe.recipe_description }}</q></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<hr class="bg-gray-300 my-10 w-full" />
+
+<section class="px-4">
+  {% comment %}
+  <div class="recipe-section-heading bg-indigo-300 px-6 py-1 mb-4" style="width:max-content">
+    <h3 class="text-3xl mb-2 leading-tight font-heading inline-block">Preparation Steps</h3>
+  </div>
+  {% endcomment %}
+  <h3 class="text-3xl mb-2 leading-tight font-heading">Preparation Steps</h3>
+  <ol type="1" class="text-xl">
+    {% for step in preparation_steps %}
+    <li class="py-1">{{ step.step_number }}. {{ step.step_description | title }}</li>
+    {% endfor %}
+  </ol>
+</section>
+
+<hr class="bg-gray-300 my-10 w-full" />
+
+<section class="py-8 px-4">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl mb-2 leading-tight font-heading">Similar Recipes</h2>
+    <div class="text-gray-700 hover:text-blue-700">
+      <a class="text-lg" href="/">Home
+        <i class="fas fa-chevron-right ml-1"></i>
+      </a>
+    </div>
+  </div>
+  <div class="flex flex-wrap -mx-4 -mb-6">
+    {% for recipe in similar_recipes %}
+    <div class="lg:w-1/3 px-4 mb-6">
+      <a href="/recipe/{{ recipe.recipe_id }}">
+        <div class="recipe-card-hover rounded-lg overflow-hidden">
+          
+          <img src="{% static "recipes/food-with-no-image.png" %}">
+          
+          <h3 class="text-lg font-semibold px-4 mt-2 font-heading">{{ recipe.recipe_name | title }}</h3>
+          <h4 class="px-4 text-sm mb-2 text-gray-600">Submitted by Food.com</h4>
+          <p class="recipe-description-quote text-gray-700 text-sm px-4 leading-relaxed overflow-y-hidden h-24">
+            {{ recipe.recipe_description | capfirst }}</p>
+          <hr class="bg-gray-300 mt-4">
+          <div class="flex justify-between px-4 my-3 text-xs" style="color: rgba(0,0,0,.4)">
+            <span class="text-color-gray">❤️ &nbsp;{{recipe.recipe_likes}} Likes / <i class="far fa-eye"></i>
+              {{recipe.recipe_visits}} Views </span>
+            <span class="text-color-gray">{{ recipe.recipe_human_readable_submitted_date }}</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<hr class="bg-gray-300 my-10 w-full" />
+
+{% endblock content %}

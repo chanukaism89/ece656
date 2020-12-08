@@ -1,0 +1,89 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Chanuka Abeysinghe">
+  <title>SmartChef</title>
+  <link rel="stylesheet" href="{% static "recipes/css/tailwind.min.css" %}">
+  <link rel="stylesheet" href="{% static "recipes/fontawesome/css/all.min.css" %}">
+  <link rel="stylesheet" href="{% static "recipes/css/app.css" %}">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="{% static "recipes/favicon.png" %}">
+</head>
+
+<body class="bg-body text-body font-body">
+  <nav class="flex flex-wrap items-center justify-between px-4 py-2 fixed w-full z-50 center-x-fixed bg-white"
+    style="box-shadow: 0 5px 20px -20px rgba(1,1,1,0.5);">
+    <div class="w-auto lg:w-auto lg:text-center">
+      <a class="text-xl text-indigo-500 font-semibold flex items-center" href="/">
+        <span class="w-12 text-indigo inline-block">
+          <svg version="1.1" viewBox="0.0 0.0 960.0 540.0" fill="none" stroke="none" stroke-linecap="square"
+            stroke-miterlimit="10" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+            <clipPath id="p.0">
+              <path d="m0 0l960.0 0l0 540.0l-960.0 0l0 -540.0z" clip-rule="nonzero" />
+            </clipPath>
+            <g clip-path="url(#p.0)">
+              <path fill="#ffffff" d="m0 0l960.0 0l0 540.0l-960.0 0z" fill-rule="evenodd" />
+              <path fill="#667eea" fill-opacity="0.0"
+                d="m94.63523 34.485645l655.4494 0l0 383.21628c-327.7247 0 -327.7247 146.01242 -655.4494 63.05081z"
+                fill-rule="evenodd" />
+              <path stroke="#667eea" stroke-width="16.0" stroke-linejoin="round" stroke-linecap="butt"
+                d="m94.63523 34.485645l655.4494 0l0 383.21628c-327.7247 0 -327.7247 146.01242 -655.4494 63.05081z"
+                fill-rule="evenodd" />
+              <path fill="#667eea"
+                d="m296.17874 363.85318q-28.75 0 -54.32811 -7.65625q-25.5625 -7.65625 -41.625 -20.71875q-8.578125 -6.34375 -8.578125 -17.921875q0 -7.828125 4.65625 -13.609375q4.671875 -5.796875 11.015625 -5.796875q6.71875 0 15.3125 5.21875q16.046875 11.578125 33.593735 16.8125q17.546875 5.21875 38.828125 5.21875q27.25 0 41.8125 -9.515625q14.5625 -9.515625 14.5625 -27.8125q0 -14.1875 -13.625 -21.84375q-13.625 -7.65625 -45.359375 -14.750015q-32.859375 -7.09375 -53.39061 -16.421875q-20.53125 -9.328125 -30.984375 -23.890625q-10.453125 -14.5625 -10.453125 -36.96875q0 -23.140625 13.0625 -41.421875q13.078125 -18.296875 36.40625 -28.5625q23.32811 -10.28125 52.45311 -10.28125q53.375 0 86.984375 28.375q4.84375 4.109375 6.890625 8.03125q2.0625 3.921875 2.0625 9.890625q0 7.84375 -4.671875 13.640625q-4.65625 5.78125 -11.0 5.78125q-3.734375 0 -6.90625 -1.125q-3.171875 -1.125 -8.40625 -4.109375q-15.296875 -11.203125 -29.671875 -16.609375q-14.375 -5.421875 -35.28125 -5.421875q-25.390625 0 -40.140625 10.265625q-14.73436 10.265625 -14.73436 28.5625q0 15.3125 13.062485 23.53125q13.0625 8.203125 44.421875 15.296875q33.234375 7.46875 53.953125 16.625q20.71875 9.140625 31.71875 23.328125q11.015625 14.187515 11.015625 35.468765q0 23.140625 -12.875 40.875q-12.875 17.734375 -36.21875 27.625q-23.328125 9.890625 -53.5625 9.890625zm264.68344 0q-38.078125 0 -66.640656 -16.421875q-28.5625 -16.4375 -43.875 -47.046875q-15.296875 -30.609375 -15.296875 -71.67189q0 -41.0625 15.296875 -71.484375q15.3125 -30.4375 43.875 -46.859375q28.56253 -16.4375 66.640656 -16.4375q24.640625 0 46.296875 7.28125q21.65625 7.28125 38.453125 21.09375q4.84375 3.734375 6.703125 7.84375q1.875 4.109375 1.875 10.078125q0 8.21875 -4.484375 13.828125q-4.46875 5.59375 -10.8125 5.59375q-7.46875 0 -15.3125 -5.234375q-16.046875 -11.953125 -29.859375 -16.609375q-13.8125 -4.671875 -30.609375 -4.671875q-38.828125 0 -58.81253 24.265625q-19.96875 24.265625 -19.96875 71.3125q0 47.406265 19.96875 71.67189q19.984406 24.265625 58.81253 24.265625q16.046875 0 29.671875 -4.84375q13.625 -4.859375 30.796875 -16.4375q3.734375 -2.234375 7.46875 -3.71875q3.734375 -1.5 7.84375 -1.5q6.34375 0 10.8125 5.609375q4.484375 5.59375 4.484375 13.796875q0 5.609375 -1.875 9.90625q-1.859375 4.28125 -6.703125 8.015625q-16.796875 13.8125 -38.453125 21.09375q-21.65625 7.28125 -46.296875 7.28125z"
+                fill-rule="nonzero" />
+            </g>
+          </svg>
+        </span>
+        <!-- SmartChef -->
+      </a>
+    </div>
+    <div class="navbar-menu hidden lg:block w-full lg:w-auto">
+      {% if not request.user.username %}
+      <a class="block lg:inline-block mt-4 lg:mt-0 mr-6 hover:bg-grey-600 shadow-sm rounded border border-gray text-grey-900 px-3 py-2 hover:text-blue-700"
+        href="{% url 'login' %}">
+        Sign In
+      </a>
+      <a class="block lg:inline-block mt-4 lg:mt-0 bg-indigo-500 hover:bg-indigo-600 rounded shadow-sm text-white px-3 py-2 hover:text-white-700"
+        href="{% url 'register_user' %}">
+        Sign Up
+      </a>
+      {% else %}
+      <span class="mx-8 text-lg text-gray-800">Welcome, {{request.user.username}} 
+	      <img src={% static "recipes/avatar.png" %} " class="inline-block ml-2 rounded-full w-8 border">
+      </span>
+      <a class="block lg:inline-block mt-4 lg:mt-0 bg-red-500 hover:bg-red-600 rounded shadow-sm text-white px-3 py-2 hover:text-white-700"
+        href="{% url 'logout' %}">
+        Logout
+      </a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 pt-16">
+    {% block content %}
+    {% endblock content %}
+  </div>
+
+  <footer class="container flex flex-wrap items-center justify-between mb-10 text-lg mx-auto">
+    <div class="w-full lg:w-auto lg:mr-6 mb-4 lg:mb-0 text-center">&copy; 2020 Smartchef</div>
+    <div class="flex flex-col lg:flex-row items-center w-full lg:w-auto">
+      <div class="mx-auto lg:mx-0 lg:ml-auto">
+        <a class="inline-block mt-0 text-blue-900 hover:text-blue-700" href="#contact-us-section">Contact Us</a>
+        <a class="inline-block mt-0 ml-8 text-blue-900 hover:text-blue-700" href="#">Privacy Policy</a>
+      </div>
+      <div class="flex justify-center mt-4 lg:mt-0 lg:ml-8 text-xl">
+        <a href="#"><i class="fab fa-instagram text-gray-700 hover:text-blue-700 ml-4"></i></a>
+        <a href="#"><i class="fab fa-twitter text-gray-700 hover:text-blue-700 ml-4"></i></a>
+        <a href="#"><i class="fab fa-facebook text-gray-700 hover:text-blue-700 ml-4"></i></a>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>

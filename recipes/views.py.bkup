@@ -1,0 +1,288 @@
+from django.shortcuts import render, redirect, get_list_or_404
+from django.http import HttpResponse
+from django.db.models import Q
+from .models import ingredients, recipes, recipe_ingredient_mapping, recipe_ingredient_mapping_names, recipe_prep_steps
+from operator import attrgetter
+from collections import Counter
+import operator
+
+
+def hello(request):
+    return render(request, 'recipes/hello.html', {})
+
+# Create your views here.
+def home_screen_view(request):
+    context = {}
+    complete_values = []
+    similar_values = []
+    query = ""
+    char = ','
+    recp = []
+    similar_recipes = []
+    if request.GET:
+        query = request.GET['q']
+        query = str(query).strip()
+        context['query'] = str(query)
+        query1 = ''
+        for i in range(len(query)):
+            if query[i] == char:
+                query1 = query[0:i] + query[i + 1:len(query)]
+
+    if query != '':
+        recp = get_recipe_queryset(query1)
+        similar_recipes = get_recipe_queryset_similar(query1)
+
+    if recp.__len__() != 0:
+        recp_counter = Counter(recp)
+        recp_counter = sorted(recp_counter.items(), key=operator.itemgetter(1), reverse=True)
+        if recp_counter.__len__() != 0:
+            for i in recp_counter:
+                ing_l = []
+                re_obj = recp[recp.index(i[0])]
+                ing_list = recipe_ingredient_mapping_names.objects.filter(recipe_id=re_obj.recipe_id)
+                for ing in ing_list:
+                    ing_l.append(ing.ingredient_name.strip())
+                get_matched_ingredients(query1, ing_l)
+                complete_values.append(
+                    [re_obj.recipe_name, re_obj.recipe_description, ing_l, get_recipe_prep_steps(re_obj),
+                     re_obj.recipe_cooktime, re_obj.recipe_likes,
+                     re_obj.recipe_visits,
+                     re_obj.recipe_contributor,
+                     get_recipe_image_url(re_obj.recipe_websearch_id),
+                     get_matched_ingredients(query1, ing_l)])
+
+    if similar_recipes.__len__() != 0:
+        recp_counter = Counter(similar_recipes)
+        recp_counter = sorted(recp_counter.items(), key=operator.itemgetter(1), reverse=True)
+        if recp_counter.__len__() != 0:
+            for i in recp_counter:
+                ing_l = []
+                re_obj = similar_recipes[similar_recipes.index(i[0])]
+                ing_list = recipe_ingredient_mapping_names.objects.filter(recipe_id=re_obj.recipe_id)
+                for ing in ing_list:
+                    ing_l.append(ing.ingredient_name.strip())
+                similar_values.append(
+                    [re_obj.recipe_name, re_obj.recipe_description, ing_l, get_recipe_prep_steps(re_obj),
+                     re_obj.recipe_cooktime, re_obj.recipe_likes,
+                     re_obj.recipe_visits,
+                     re_obj.recipe_contributor,
+                     get_recipe_image_url(re_obj.recipe_websearch_id),
+                     get_matched_ingredients(query1, ing_l)])
+
+    # similar_recipes = [i for i in similar_recipes if i not in complete_values]
+    # Default Data for home page to be displayed
+    context['recipe_most_visited'] = get_most_visited_recipes()
+    context['recipe_most_liked'] = get_most_liked_recipes()
+    context['recipe_recent_created'] = get_recent_created_recipes()
+    context['defaults'] = ['recipe_most_visited', 'recipe_most_liked', 'recipe_recent_created']
+    context['recipe_post'] = complete_values[:10]
+    context['similar_recipes'] = similar_values[:10]
+
+    return render(request, "recipes/home.html", context)
+
+
+def search_using_recipes(request):
+    context = {}
+    complete_values = []
+    similar_values = []
+    query = ""
+    char = ','
+    recp = []
+    similar_recipes = []
+    if request.GET:
+        query = request.GET['q']
+        query = str(query).strip()
+        context['query'] = str(query)
+        print("query")
+        print(query)
+
+    if query != '':
+        recp = get_recipe(query)
+        similar_recipes = get_similar_recipes(query)
+
+    print(recp)
+    if recp:
+        ing_l = []
+        re_obj = recp
+        ing_list = recipe_ingredient_mapping_names.objects.filter(recipe_id=re_obj.recipe_id)
+        for ing in ing_list:
+            ing_l.append(ing.ingredient_name.strip())
+        complete_values.append(
+            [re_obj.recipe_name, re_obj.recipe_description, ing_l, get_recipe_prep_steps(re_obj),
+             re_obj.recipe_cooktime, re_obj.recipe_likes,
+             re_obj.recipe_visits,
+             re_obj.recipe_contributor,
+             get_recipe_image_url(re_obj.recipe_websearch_id),
+             get_matched_ingredients(query, ing_l)])
+
+    if similar_recipes.__len__() != 0:
+        for i in similar_recipes:
+            ing_l = []
+            re_obj = i
+            ing_list = recipe_ingredient_mapping_names.objects.filter(recipe_id=re_obj.recipe_id)
+            for ing in ing_list:
+                ing_l.append(ing.ingredient_name.strip())
+            similar_values.append(
+                [re_obj.recipe_name, re_obj.recipe_description, ing_l, get_recipe_prep_steps(re_obj),
+                 re_obj.recipe_cooktime, re_obj.recipe_likes,
+                 re_obj.recipe_visits,
+                 re_obj.recipe_contributor,
+                 get_recipe_image_url(re_obj.recipe_websearch_id),
+                 get_matched_ingredients(query, ing_l)])
+
+    print("printing similar recipes")
+    print(similar_recipes)
+    context['recipe_most_visited'] = get_most_visited_recipes()
+    context['recipe_most_liked'] = get_most_liked_recipes()
+    context['recipe_recent_created'] = get_recent_created_recipes()
+    context['defaults'] = ['recipe_most_visited', 'recipe_most_liked', 'recipe_recent_created']
+    context['recipe_post'] = complete_values[:10]
+    context['similar_recipes'] = similar_values[:10]
+
+    return render(request, "recipes/search_recipes.html", context)
+
+
+def get_recipe_queryset_similar(query=None):
+    queryset = []
+    queries = query.split(",")
+    ing_list = []
+    recpid_list = []
+    for q in queries:
+        for ing in ingredients.objects.filter(ingredient_name__icontains=q.strip()):
+            ing_list.append(ing)
+
+    for i in ing_list:
+        for recp_id in recipe_ingredient_mapping.objects.filter(ingredient_id=i.ingredient_id):
+            recpid_list.append(recp_id)
+
+    for re in recpid_list:
+        recp = recipes.objects.filter(recipe_name=re.recipe_id)
+
+        for r in recp:
+            queryset.append(r)
+
+    return queryset
+
+
+def get_recipe_queryset(query=None):
+    queryset = []
+    queries = query.split(",")
+    ing_list = []
+    recpid_list = []
+    for q in queries:
+        print("printing q")
+        print(q.strip())
+        for ing in ingredients.objects.filter(ingredient_name=q.strip()):
+            ing_list.append(ing)
+
+    print("printing ing list")
+    print(ing_list)
+    for i in ing_list:
+        for recp_id in recipe_ingredient_mapping.objects.filter(ingredient_id=i.ingredient_id):
+            recpid_list.append(recp_id)
+
+    for re in recpid_list:
+        recp = recipes.objects.filter(recipe_name=re.recipe_id)
+
+        for r in recp:
+            queryset.append(r)
+
+    return queryset
+
+
+def get_most_visited_recipes():
+    visited = list(set(recipes.objects.all().order_by('-recipe_visits')[:5]))
+    visited_recipe_details = []
+    for v in visited:
+        visited_recipe_details.append(get_recipe_default_details(v))
+    return visited_recipe_details
+
+
+def get_most_liked_recipes():
+    liked = list(set(recipes.objects.all().order_by('-recipe_likes')[:5]))
+    liked_recipe_details = []
+    for li in liked:
+        liked_recipe_details.append(get_recipe_default_details(li))
+    return liked_recipe_details
+
+
+def get_recent_created_recipes():
+    recent = list(set(recipes.objects.all().order_by('-recipe_submitted_date')[:5]))
+    recent_created_details = []
+    for re in recent:
+        recent_created_details.append(get_recipe_default_details(re))
+    return recent_created_details
+
+
+def get_recipe_default_details(re_obj=None):
+    ing_l = []
+    complete_values = []
+    ing_list = recipe_ingredient_mapping_names.objects.filter(recipe_id=re_obj.recipe_id)
+    for ing in ing_list:
+        ing_l.append(ing.ingredient_name.strip())
+
+    complete_values.append(
+        [re_obj.recipe_id, re_obj.recipe_name, re_obj.recipe_description, ing_l, get_recipe_prep_steps(re_obj),
+         re_obj.recipe_cooktime,
+         re_obj.recipe_likes,
+         re_obj.recipe_visits,
+         re_obj.recipe_contributor,
+         get_recipe_image_url(re_obj.recipe_websearch_id)])
+
+    return complete_values
+
+
+def get_recipe_prep_steps(re_obj=None):
+    prep_steps = []
+    for p in recipe_prep_steps.objects.filter(recipe_id=re_obj.recipe_id):
+        prep_steps.append(p.step_description)
+    return prep_steps
+
+
+def get_recipe(re_name=None):
+    print(type(re_name))
+    return Recipes.objects.get(recipe_name=re_name)
+
+
+def get_similar_recipes(re_name=None):
+    queries = re_name.split()
+    recpid_list = []
+
+    for q in queries:
+        print("printing q after splitting")
+        print(q.strip())
+        print(q.strip().isspace())
+        for recp in recipes.objects.filter(recipe_name__icontains=q.strip()):
+            recpid_list.append(recp)
+
+    return list(set(recpid_list))
+
+
+def get_recipe_image_url(re_websearchid=None):
+    try:
+        return recipe_image_urls.objects.get(recipe_websearch_id=re_websearchid).image_url
+    except:
+        return ""
+
+
+def get_matched_ingredients(query,ing_list):
+    # queryset = []
+    queries = query.split(",")
+    ing_list_matched = []
+    # recpid_list = []
+    # for q in queries:
+    #     print("printing q")
+    #     print(q.strip())
+    ing_list_matched = [i.strip() for i in queries if i.strip() in ing_list]
+    print("ing_list_matched")
+    print(ing_list_matched)
+    return ing_list_matched
+# def detail_recp_view(request, slug):
+#     context = {}
+#
+#     recipe_post = get_list_or_404(Recipes, recipe_name=slug)
+#     print("printing recipe post")
+#     print(recipe_post)
+#     context['recipe_post'] = recipe_post
+# #    { % url  'recipes:detail_recipe'  slug = value.slug %}-->
+#     return render(request, 'recipes/detail_recipe.html', context)

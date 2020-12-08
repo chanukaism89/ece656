@@ -1,0 +1,22 @@
+<!-- templates/registration/login.html -->
+{% extends "recipes/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<style>
+  .form-wrapper {
+    max-width: 20rem;
+  }
+</style>
+
+<div class="container flex flex-row">
+  <div class="left w-1/2">
+    <img src="{% static "accounts/smart_chef_login.png" %}" alt="">
+  </div>
+  <div class="right w-1/2 flex flex-col justify-center items-center">
+    {% block formcontent %}
+    {% endblock formcontent %}
+  </div>
+</div>
+{% endblock %}

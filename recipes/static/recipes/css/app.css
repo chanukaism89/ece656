@@ -1,0 +1,51 @@
+html {
+    font-family: 'Lato', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+.main-search-bar, .main-search-bar>i {
+    transition: all 150ms ease-in-out;
+}
+
+.main-search-bar:focus-within {
+    /* box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .1), 0 1px 2px 0 rgba(0, 0, 0, .01);
+    /* border-color: #cbd5e0; */
+    border-color: #667eea;
+}
+
+.main-search-bar:focus-within>i {
+    color: #667eea
+}
+
+.recipe-section-heading {
+    transform: skew(-30deg)
+}
+
+.recipe-section-heading>h2, .recipe-section-heading>h3 {
+    transform: skew(30deg)
+}
+
+.recipe-card-hover {
+    box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+    transition: all 150ms ease-in-out;
+}
+
+.recipe-card-hover:hover {
+    cursor: pointer;
+    transform: translateY(-4px);
+    box-shadow: 0 1px 3px 0 #bcbdbd, 0 0 0 1px #d4d4d5;
+}
+
+.recipe-description-quote:before {
+    content: open-quote;
+}
+
+.recipe-description-quote:after {
+    content: close-quote;
+}
+
+.center-x-fixed {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+}
