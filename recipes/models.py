@@ -49,21 +49,29 @@ class recipes(models.Model):
 
     def find_similar_recipes(self, limit=3):
         recipe_counter = Counter()
-        print (self.ingredients2.all())
-        print (self.preparation_steps.all())
+        #print (self.ingredients.all())
+        #print (self.preparation_steps.all())
         for ingredient in self.ingredients.all():
-            print (self.ingredients.all())
+            #print (self.ingredients.all())
             top_recipes = (
                 recipes.objects.exclude(recipe_id=self.recipe_id)
-                .filter(ingredients__ingredient_name=ingredient.ingredient_name)
+                .filter(ingredients__ingredient_id=ingredient.ingredient_id)
                 .order_by("-recipe_likes")
                 .all()[:limit]
             )
             recipe_counter.update(top_recipes)
 
         similar_recipes = [r for (r, _) in recipe_counter.most_common(limit)]
-        print (similar_recipes)
+        #print (similar_recipes)
         return similar_recipes
+
+    def get_ingredients(self):
+        name_list =[]
+        for ingredient in self.ingredients.all():
+            name_list.append(ingredient.ingredient_id)
+            
+        print (name_list)
+        return name_list
 
     class Meta:
         verbose_name="All Recipes"
@@ -73,6 +81,19 @@ class ingredients(models.Model):
     ingredient_id = models.IntegerField(primary_key=True)
     ingredient_name = models.TextField()
     ingredient_vists = models.IntegerField(default=0)
+
+    def get_recipes(self):
+        map_list =[]
+        recipe_id_list =[]
+        #print (self)
+        #print (self.ing_id.all())
+        map_list = self.ing_id.all()
+        
+        
+        for mapping in map_list:
+            recipe_id_list.append (mapping.recipe_id)
+        #print (recipe_id_list)
+        return recipe_id_list
 
     def __str__(self):
         return self.ingredient_name
@@ -85,7 +106,7 @@ class ingredients(models.Model):
 class recipe_ingredient_mapping_names(models.Model):
 
     mapping_id = models.IntegerField(primary_key=True)
-    recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE, related_name="ingredients")
+    recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE, related_name="ingredients1")
     ingredient_name = models.ForeignKey(ingredients, on_delete=models.CASCADE, related_name="ing_name")
 
 
@@ -99,5 +120,5 @@ class recipe_prep_steps(models.Model):
 class recipe_ingredient_mapping(models.Model):
         
     mapping_id = models.IntegerField(primary_key=True)
-    recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE , related_name="ingredients2")
+    recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE , related_name="ingredients")
     ingredient_id = models.ForeignKey(ingredients, on_delete=models.CASCADE, related_name="ing_id")

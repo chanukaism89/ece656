@@ -61,7 +61,7 @@ class RecipeDetailsPageView(TemplateView):
         recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
         preparation_steps = recipe.get_preparation_steps_in_order()
         similar_recipes = recipe.find_similar_recipes(limit=3)
-
+        ingredient_names = recipe.get_ingredients()
         # has the logged in user liked these recipes?
         liked = False
         # if request.user.username and request.user in recipe.liked_by_users.all():
@@ -75,6 +75,7 @@ class RecipeDetailsPageView(TemplateView):
             "preparation_steps": preparation_steps,
             "similar_recipes": similar_recipes,
             "liked": liked,
+            "ingredients": ingredient_names,
         }
         return render(request, "recipes/recipe_details.html", context=context)
 
@@ -110,16 +111,28 @@ class RecipeSearchResultsView(TemplateView):
 
         # search for recipes containing the search terms in their names
         for term in search_terms:
-            recipe_counter.update(Recipe.objects.filter(name__icontains=term).all())
+            
+            recipe_counter.update(recipes.objects.filter(recipe_name__iregex=r"\b{0}\b".format(term)).all())
 
         all_ingredients = set()
         for term in search_terms:
-            for ingredient in ingredients.objects.filter(name__icontains=term).all():
+            for ingredient in ingredients.objects.filter(ingredient_name__iregex=r"\b{0}\b".format(term)).all():
                 all_ingredients.add(ingredient)
-
+                #print (all_ingredients)
+        print (all_ingredients)
         for ingredient in all_ingredients:
-            recipe_counter.update(ingredient.recipes.all())
+            recipe_list =[]
+            recipe_map_list= ingredient.get_recipes()
+            #print (recipe_list)
 
+            if recipe_map_list:
+                
+                for mapping in recipe_map_list:
+
+                    #print (ingredient)
+                    #print (recipe_list)
+                    recipe_counter.update(recipes.objects.filter(recipe_name=mapping))
+                     
         search_results = [recipe for (recipe, _) in recipe_counter.most_common(50)]
 
         context = {
