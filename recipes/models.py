@@ -4,7 +4,6 @@ import arrow
 from collections import Counter
 from django.contrib.auth.models import User
 from django.utils import timezone
-
 # Create your models here.
 
 class recipesManager(models.Manager):
@@ -122,3 +121,9 @@ class recipe_ingredient_mapping(models.Model):
     mapping_id = models.IntegerField(primary_key=True)
     recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE , related_name="ingredients")
     ingredient_id = models.ForeignKey(ingredients, on_delete=models.CASCADE, related_name="ing_id")
+
+class likes(models.Model):
+    
+    recipe_id = models.OneToOneField(recipes, on_delete=models.CASCADE , related_name="liked_recipe")
+    user_id =  models.OneToOneField(User, on_delete=models.CASCADE , related_name="liked_user")
+    is_like = models.IntegerField()

@@ -82,23 +82,24 @@ class RecipeDetailsPageView(TemplateView):
 
 class RecipeLikeApiView(View):
     def post(self, request, **kwargs):
-        recipe = get_object_or_404(Recipe, id=kwargs["recipe_id"])
+        recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
+        print(request.user)
         recipe.liked_by_users.add(request.user)
-        recipe.likes = recipe.likes + 1
+        recipe.recipe_likes = recipe.recipe_likes + 1
         recipe.save()
         return JsonResponse(
-            {"recipe_id": recipe.id, "user_id": request.user.id, "success": True,}
+            {"recipe_id": recipe.recipe_id, "user_id": request.auth_user.id, "success": True,}
         )
 
 
 class RecipeUnlikeApiView(View):
     def post(self, request, **kwargs):
-        recipe = get_object_or_404(Recipe, id=kwargs["recipe_id"])
+        recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
         recipe.liked_by_users.remove(request.user)
-        recipe.likes = recipe.likes - 1
+        recipe.recipe_likes = recipe.recipe_likes - 1
         recipe.save()
         return JsonResponse(
-            {"recipe_id": recipe.id, "user_id": request.user.id, "success": True,}
+            {"recipe_id": recipe.recipe_id, "user_id": request.auth_user.id, "success": True,}
         )
 
 
