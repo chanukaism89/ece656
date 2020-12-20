@@ -1,0 +1,11 @@
+arrow
+asgiref
+Django
+django-extensions
+mysqlclient
+pkg-resources
+python-dateutil
+pytz
+setuptools
+six
+sqlparse 
