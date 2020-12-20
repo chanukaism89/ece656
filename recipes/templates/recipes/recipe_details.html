@@ -41,6 +41,7 @@
 
         const addRecipeToFavourites = () => {
           const url = "{% url 'recipe_like_view' recipe.recipe_id %}"
+	  
           fetch(url,
             {
               headers: {
@@ -97,7 +98,7 @@
     <div class="w-1/2">
       <figure>
         
-        <img src="{% static "recipes/food-with-no-image.png" %}">
+        <img src="{% static "recipes/food-with-no-image.png" %}" width="900" height="700">
         
         <figcaption><q class="italic">{{ recipe.recipe_description }}</q></figcaption>
       </figure>
@@ -138,7 +139,7 @@
       <a href="/recipe/{{ recipe.recipe_id }}">
         <div class="recipe-card-hover rounded-lg overflow-hidden">
           
-          <img src="{% static "recipes/food-with-no-image.png" %}">
+          <img src="{% static "recipes/food-with-no-image.png" %}" width="900" height="700">
           
           <h3 class="text-lg font-semibold px-4 mt-2 font-heading">{{ recipe.recipe_name | title }}</h3>
           <h4 class="px-4 text-sm mb-2 text-gray-600">Submitted by Food.com</h4>

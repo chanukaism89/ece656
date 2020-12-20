@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Chanuka Abeysinghe">
-  <title>SmartChef</title>
+  <title>Recipe Finder</title>
   <link rel="stylesheet" href="{% static "recipes/css/tailwind.min.css" %}">
   <link rel="stylesheet" href="{% static "recipes/fontawesome/css/all.min.css" %}">
   <link rel="stylesheet" href="{% static "recipes/css/app.css" %}">
@@ -40,7 +40,7 @@
             </g>
           </svg>
         </span>
-        <!-- SmartChef -->
+        <!-- Recipe Finder -->
       </a>
     </div>
     <div class="navbar-menu hidden lg:block w-full lg:w-auto">
@@ -58,7 +58,7 @@
 	      <img src={% static "recipes/avatar.png" %} " class="inline-block ml-2 rounded-full w-8 border">
       </span>
       <a class="block lg:inline-block mt-4 lg:mt-0 bg-red-500 hover:bg-red-600 rounded shadow-sm text-white px-3 py-2 hover:text-white-700"
-        href="{% url 'logout' %}">
+        href="{% url 'logout' %}?next=/">
         Logout
       </a>
       {% endif %}
@@ -71,7 +71,7 @@
   </div>
 
   <footer class="container flex flex-wrap items-center justify-between mb-10 text-lg mx-auto">
-    <div class="w-full lg:w-auto lg:mr-6 mb-4 lg:mb-0 text-center">&copy; 2020 Smartchef</div>
+    <div class="w-full lg:w-auto lg:mr-6 mb-4 lg:mb-0 text-center">&copy; 2020 Recipe Finder</div>
     <div class="flex flex-col lg:flex-row items-center w-full lg:w-auto">
       <div class="mx-auto lg:mx-0 lg:ml-auto">
         <a class="inline-block mt-0 text-blue-900 hover:text-blue-700" href="#contact-us-section">Contact Us</a>

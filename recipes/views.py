@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
 
-from recipes.models import recipes, ingredients
+from recipes.models import recipes, ingredients, likes
 
 class HelloView(TemplateView):
     def get(self,request, **kwargs):
@@ -61,7 +61,7 @@ class RecipeDetailsPageView(TemplateView):
         recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
         preparation_steps = recipe.get_preparation_steps_in_order()
         similar_recipes = recipe.find_similar_recipes(limit=3)
-
+        ingredient_names = recipe.get_ingredients()
         # has the logged in user liked these recipes?
         liked = False
         # if request.user.username and request.user in recipe.liked_by_users.all():
@@ -75,29 +75,42 @@ class RecipeDetailsPageView(TemplateView):
             "preparation_steps": preparation_steps,
             "similar_recipes": similar_recipes,
             "liked": liked,
+            "ingredients": ingredient_names,
         }
         return render(request, "recipes/recipe_details.html", context=context)
 
 
 class RecipeLikeApiView(View):
     def post(self, request, **kwargs):
-        recipe = get_object_or_404(Recipe, id=kwargs["recipe_id"])
-        recipe.liked_by_users.add(request.user)
-        recipe.likes = recipe.likes + 1
+        recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
+        liked_entry = likes.objects.filter( recipe_id=kwargs["recipe_id"], user_id=request.user.id)
+        print (liked_entry)
+        if(liked_entry):
+            print("liked entry found")
+            liked_entry[0].is_like = 1
+            liked_entry[0].save()
+        else:
+            print("No liked entry found")
+            like = likes(is_like=1, recipe_id=recipe, user_id=request.user)
+            like.save()
+        recipe.recipe_likes += 1
         recipe.save()
         return JsonResponse(
-            {"recipe_id": recipe.id, "user_id": request.user.id, "success": True,}
+            {"recipe_id": recipe.recipe_id, "user_id": request.user.id, "success": True,}
         )
 
 
 class RecipeUnlikeApiView(View):
     def post(self, request, **kwargs):
-        recipe = get_object_or_404(Recipe, id=kwargs["recipe_id"])
-        recipe.liked_by_users.remove(request.user)
-        recipe.likes = recipe.likes - 1
+        recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
+        like = likes(is_like=0, recipe_id=recipe, user_id=request.user)
+        liked_entry = likes.objects.filter( recipe_id=kwargs["recipe_id"], user_id=request.user.id)
+        liked_entry[0].is_like = 0
+        liked_entry[0].save()
+        recipe.recipe_likes -= 1
         recipe.save()
         return JsonResponse(
-            {"recipe_id": recipe.id, "user_id": request.user.id, "success": True,}
+            {"recipe_id": recipe.recipe_id, "user_id": request.user.id, "success": True,}
         )
 
 
@@ -110,16 +123,28 @@ class RecipeSearchResultsView(TemplateView):
 
         # search for recipes containing the search terms in their names
         for term in search_terms:
-            recipe_counter.update(Recipe.objects.filter(name__icontains=term).all())
+            
+            recipe_counter.update(recipes.objects.filter(recipe_name__iregex=r"\b{0}\b".format(term)).all())
 
         all_ingredients = set()
         for term in search_terms:
-            for ingredient in ingredients.objects.filter(name__icontains=term).all():
+            for ingredient in ingredients.objects.filter(ingredient_name__iregex=r"\b{0}\b".format(term)).all():
                 all_ingredients.add(ingredient)
-
+                #print (all_ingredients)
+        #print (all_ingredients)
         for ingredient in all_ingredients:
-            recipe_counter.update(ingredient.recipes.all())
+            recipe_list =[]
+            recipe_map_list= ingredient.get_recipes()
+            #print (recipe_list)
 
+            if recipe_map_list:
+                
+                for mapping in recipe_map_list:
+
+                    #print (ingredient)
+                    #print (recipe_list)
+                    recipe_counter.update(recipes.objects.filter(recipe_name=mapping))
+                     
         search_results = [recipe for (recipe, _) in recipe_counter.most_common(50)]
 
         context = {
