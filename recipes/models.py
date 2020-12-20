@@ -124,6 +124,19 @@ class recipe_ingredient_mapping(models.Model):
 
 class likes(models.Model):
     
-    recipe_id = models.OneToOneField(recipes, on_delete=models.CASCADE , related_name="liked_recipe")
-    user_id =  models.OneToOneField(User, on_delete=models.CASCADE , related_name="liked_user")
+    recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE , related_name="liked_recipe")
+    user_id =  models.ForeignKey(User, on_delete=models.CASCADE , related_name="liked_user")
     is_like = models.IntegerField()
+
+    class Meta:
+                unique_together = (("recipe_id", "user_id"),)
+
+
+class reviews(models.Model):
+
+    
+    recipe_id = models.ForeignKey(recipes, on_delete=models.CASCADE , related_name="reviewed_recipe")
+    user_id =  models.ForeignKey(User, on_delete=models.CASCADE , related_name="reviewed_user")
+    review = models.TextField(default='')
+
+

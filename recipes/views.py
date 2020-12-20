@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import TemplateView
 
-from recipes.models import recipes, ingredients
+from recipes.models import recipes, ingredients, likes
 
 class HelloView(TemplateView):
     def get(self,request, **kwargs):
@@ -83,23 +83,34 @@ class RecipeDetailsPageView(TemplateView):
 class RecipeLikeApiView(View):
     def post(self, request, **kwargs):
         recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
-        print(request.user)
-        recipe.liked_by_users.add(request.user)
-        recipe.recipe_likes = recipe.recipe_likes + 1
+        liked_entry = likes.objects.filter( recipe_id=kwargs["recipe_id"], user_id=request.user.id)
+        print (liked_entry)
+        if(liked_entry):
+            print("liked entry found")
+            liked_entry[0].is_like = 1
+            liked_entry[0].save()
+        else:
+            print("No liked entry found")
+            like = likes(is_like=1, recipe_id=recipe, user_id=request.user)
+            like.save()
+        recipe.recipe_likes += 1
         recipe.save()
         return JsonResponse(
-            {"recipe_id": recipe.recipe_id, "user_id": request.auth_user.id, "success": True,}
+            {"recipe_id": recipe.recipe_id, "user_id": request.user.id, "success": True,}
         )
 
 
 class RecipeUnlikeApiView(View):
     def post(self, request, **kwargs):
         recipe = get_object_or_404(recipes, recipe_id=kwargs["recipe_id"])
-        recipe.liked_by_users.remove(request.user)
-        recipe.recipe_likes = recipe.recipe_likes - 1
+        like = likes(is_like=0, recipe_id=recipe, user_id=request.user)
+        liked_entry = likes.objects.filter( recipe_id=kwargs["recipe_id"], user_id=request.user.id)
+        liked_entry[0].is_like = 0
+        liked_entry[0].save()
+        recipe.recipe_likes -= 1
         recipe.save()
         return JsonResponse(
-            {"recipe_id": recipe.recipe_id, "user_id": request.auth_user.id, "success": True,}
+            {"recipe_id": recipe.recipe_id, "user_id": request.user.id, "success": True,}
         )
 
 
@@ -120,7 +131,7 @@ class RecipeSearchResultsView(TemplateView):
             for ingredient in ingredients.objects.filter(ingredient_name__iregex=r"\b{0}\b".format(term)).all():
                 all_ingredients.add(ingredient)
                 #print (all_ingredients)
-        print (all_ingredients)
+        #print (all_ingredients)
         for ingredient in all_ingredients:
             recipe_list =[]
             recipe_map_list= ingredient.get_recipes()

@@ -5,7 +5,7 @@
 <section class="py-8 px-4">
   <div class="flex justify-between items-center mb-6">
     <div class="recipe-section-heading bg-orange-300 px-6">
-      <h2 class="text-4xl mb-2 leading-tight font-heading">Most Favourited Recipes</h2>
+      <h2 class="text-4xl mb-2 leading-tight font-heading">Most Liked Recipes</h2>
     </div>
     <div class="text-gray-700 hover:text-blue-700">
       <a class="text-lg" href="/">Home
@@ -29,7 +29,7 @@
           <div class="flex justify-between px-4 my-3 text-xs" style="color: rgba(0,0,0,.4)">
             <span class="text-color-gray">❤️ &nbsp;{{recipe.recipe_likes}} Likes / <i class="far fa-eye"></i>
               {{recipe.recipe_visits}} Views </span>
-            <span class="text-color-gray">{{ recipe.recipe_human_readable_submitted_date }}</span>
+            <span class="text-color-gray">{{ recipe.human_readable_submitted_date }}</span>
           </div>
         </div>
       </a>

@@ -4,7 +4,7 @@
 {% block content %}
 <section class="py-4 px-4 text-center mt-16 mb-20">
   <div class="w-full max-w-4xl mx-auto">
-    <h1 class="text-5xl text-indigo-500 font-semibold">SmartChef</h1>
+    <h1 class="text-5xl text-indigo-500 font-semibold">Recipe Finder</h1>
     <div class="main-search-bar flex items-center w-full border border-gray mt-6 rounded-full text-4xl">
       <input class="flex-auto pl-6 py-2 m-1 placeholder-gray-400 text-gray-700 rounded-l-full"
         placeholder="Search by recipe or ingredient" id="recipe_search_input" onkeyup="onSearch(event)" required
@@ -71,10 +71,10 @@
 <section class="py-8 px-4">
   <div class="flex justify-between items-center mb-6">
     <div class="recipe-section-heading bg-orange-300 px-6">
-      <h2 class="text-4xl mb-2 leading-tight font-heading">Most Favourited Recipes</h2>
+      <h2 class="text-4xl mb-2 leading-tight font-heading">Most Liked Recipes</h2>
     </div>
     <div class="text-gray-700 hover:text-blue-700">
-      <a class="text-lg" href="{% url 'most_favourited_recipes_page' %}">View All Favourited
+      <a class="text-lg" href="{% url 'most_favourited_recipes_page' %}">View All Most Liked
         <i class="fas fa-chevron-right ml-1"></i>
       </a>
     </div>
@@ -95,7 +95,7 @@
           <div class="flex justify-between px-4 my-3 text-xs" style="color: rgba(0,0,0,.4)">
             <span class="text-color-gray">❤️ &nbsp;{{recipe.recipe_likes}} Likes / <i class="far fa-eye"></i>
               {{recipe.recipe_visits}} Views </span>
-            <span class="text-color-gray">{{ recipe.recipe_human_readable_submitted_date }}</span>
+            <span class="text-color-gray">{{ recipe.human_readable_submitted_date }}</span>
           </div>
         </div>
       </a>
@@ -133,7 +133,7 @@
           <div class="flex justify-between px-4 my-3 text-xs" style="color: rgba(0,0,0,.4)">
             <span class="text-color-gray">❤️ &nbsp;{{recipe.recipe_likes}} Likes / <i class="far fa-eye"></i>
               {{recipe.recipe_visits}} Views </span>
-            <span class="text-color-gray">{{ recipe.recipe_human_readable_submitted_date }}</span>
+            <span class="text-color-gray">{{ recipe.human_readable_submitted_date }}</span>
           </div>
         </div>
       </a>
@@ -145,7 +145,7 @@
 <hr class="bg-gray-300 my-10 w-full" />
 
 <section class="px-4 text-center">
-  <h2 class="text-4xl mb-8 leading-tight font-heading">SmartChef Family</h2>
+  <h2 class="text-4xl mb-8 leading-tight font-heading">Recipe Finder Family</h2>
   {% comment %} <p class="max-w-xl mx-auto mb-12 text-gray-500">Because no great company could exist without
     accountants, sellers,
     stock workers, and of course - paper.</p> {% endcomment %}
@@ -207,7 +207,7 @@
   </div>
   <div class="text-center">
     <p class="mb-2">Or just email us on</p><a class="text-blue-700 hover:underline"
-      href="mailto:team@smartchef.com">team@smartchef.com</a>
+      href="mailto:team@smartchef.com">team@recipefinder.com</a>
   </div>
 </section>
 
