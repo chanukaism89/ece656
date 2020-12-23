@@ -1,4 +1,7 @@
-tdrop table if exists recipes_reviews;
+CREATE USER 'ece656'@'localhost' IDENTIFIED BY '12345';
+GRANT ALL PRIVILEGES ON SmartChef . * TO 'ece656'@'localhost';
+
+drop table if exists recipes_reviews;
 drop table if exists recipes_likes;
 drop table if exists recipes_recipe_prep_steps;
 drop table if exists recipes_recipe_ingredient_mapping;
