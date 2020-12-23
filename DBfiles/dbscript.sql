@@ -18,12 +18,12 @@ CREATE TABLE recipes_recipe_prep_steps(steps_id INT, recipe_id_id INT NOT NULL, 
 
 CREATE TABLE recipes_likes(id INT AUTO_INCREMENT, recipe_id_id INT, user_id_id INT, is_like TINYINT(1), PRIMARY KEY (id), FOREIGN KEY (recipe_id_id) REFERENCES recipes_recipes(recipe_id), FOREIGN KEY (user_id_id) REFERENCES auth_user(id));
 
-CREATE TABLE recipes_reviews(id INT AUTO_INCREMENT, review LONGTEXT, recipe_id_id INT, user_id_id INT, RIMARY KEY (id), FOREIGN KEY (recipe_id_id) REFERENCES recipes_recipes(recipe_id), FOREIGN KEY (user_id_id) REFERENCES auth_user(id));
+CREATE TABLE recipes_reviews(id INT AUTO_INCREMENT, review LONGTEXT, recipe_id_id INT, user_id_id INT, PRIMARY KEY (id), FOREIGN KEY (recipe_id_id) REFERENCES recipes_recipes(recipe_id), FOREIGN KEY (user_id_id) REFERENCES auth_user(id));
 
-LOAD DATA LOCAL INFILE '/var/lib/mysql-files/recipes_all.csv'  INTO TABLE recipes_recipes TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '/var/lib/mysql-files/recipes_all.csv'  INTO TABLE recipes_recipes FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 
-LOAD DATA LOCAL INFILE '/var/lib/mysql-files/ingredients_table.csv' INTO TABLE recipes_ingredients CHARACTER SET UTF8FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '/var/lib/mysql-files/ingredients_table.csv' INTO TABLE recipes_ingredients CHARACTER SET UTF8 FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 
-LOAD DATA LOCAL INFILE '/var/lib/mysql-files/recipe_prep_steps_1000' INTO TABLE recipes_recipe_prep_steps CHARACTER SET UTF8FIELDS TERMINATED BY '$' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '/var/lib/mysql-files/recipe_prep_steps_1000' INTO TABLE recipes_recipe_prep_steps CHARACTER SET UTF8 FIELDS TERMINATED BY '$' LINES TERMINATED BY '\n';
 
-LOAD DATA LOCAL INFILE '/var/lib/mysql-files/recipe_ingredient_mapping' INTO TABLE recipes_recipe_ingredient_mapping TERMINATED BY ',' LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INFILE '/var/lib/mysql-files/recipe_ingredient_mapping' INTO TABLE recipes_recipe_ingredient_mapping FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
