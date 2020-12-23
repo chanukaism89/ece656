@@ -14,8 +14,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # copy data files to mysql file folder
-tar -xvf DBfiles/recipes_all.tar
-tar -xvf DBfiles/recipe_ingredient_mapping.tar
+tar -xzvf recipe_ingredient_mapping.tar.gz
+tar -xzvf recipes_all.tar.gz
 cp DBfiles/ingredients_table.csv /var/lib/mysql-files/
 cp DBfiles/recipe_prep_steps_1000 /var/lib/mysql-files/
 cp DBfiles/recipes_all.csv /var/lib/mysql-files/
