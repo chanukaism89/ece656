@@ -4,7 +4,7 @@ sudo apt-get update
 sudo apt-get install python3-dev libssl-dev python3
 
 # install pip
-
+apt-get install python3-venv
 apt install python3-pip
 rm -rf venv
 python3 -m venv venv
