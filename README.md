@@ -3,6 +3,8 @@ ECE656 Project
 
 # Initial Setup
 
+This will install and setup the environment for a Ubuntu server
+
 To install required dependancies run following
 
 ```
