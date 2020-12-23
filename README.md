@@ -30,7 +30,7 @@ source /path/to/project/DBfiles/dbscript.sql
 # Start Web server
 
 ```
-python3 namage.py runserver 0.0.0.0:8000
+python3 manage.py runserver 0.0.0.0:8000
 ```
 
 Connect to the webser using web browser
