@@ -1,4 +1,4 @@
-drop table if exists recipes_reviews;
+tdrop table if exists recipes_reviews;
 drop table if exists recipes_likes;
 drop table if exists recipes_recipe_prep_steps;
 drop table if exists recipes_recipe_ingredient_mapping;
@@ -19,6 +19,8 @@ CREATE TABLE recipes_recipe_prep_steps(steps_id INT, recipe_id_id INT NOT NULL, 
 CREATE TABLE recipes_likes(id INT AUTO_INCREMENT, recipe_id_id INT, user_id_id INT, is_like TINYINT(1), PRIMARY KEY (id), FOREIGN KEY (recipe_id_id) REFERENCES recipes_recipes(recipe_id), FOREIGN KEY (user_id_id) REFERENCES auth_user(id));
 
 CREATE TABLE recipes_reviews(id INT AUTO_INCREMENT, review LONGTEXT, recipe_id_id INT, user_id_id INT, PRIMARY KEY (id), FOREIGN KEY (recipe_id_id) REFERENCES recipes_recipes(recipe_id), FOREIGN KEY (user_id_id) REFERENCES auth_user(id));
+
+SET GLOBAL local_infile=1;
 
 LOAD DATA LOCAL INFILE '/var/lib/mysql-files/recipes_all.csv'  INTO TABLE recipes_recipes FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n';
 
